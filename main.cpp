@@ -5,21 +5,12 @@
 
 int main(int argc, char* argv[]){
 
-	/*	
-	qDebug() << "argc: " << argc;
-	for (int i=0; i<argc; i++)
-	{
-		qDebug() <<  "argv[" << i << "]: " << argv[i];
-	}
-	*/
-
 	void printError();
 
 	QTextStream out(&file);
 	QFile file("out.txt");
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
         return 0;
-
 
 
 	if (strcmp(argv[1], "-f") == 0)
