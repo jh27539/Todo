@@ -1,17 +1,29 @@
 #include <QDebug>
 #include <QFile>
+#include <QString>
+#include <QByteArray>
 #include <QTextStream>
-
+#include <QStringList>
 
 int main(int argc, char* argv[]){
 
 	void printError();
 
-	QTextStream out(&file);
-	QFile file("out.txt");
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-        return 0;
+	int numLines = 0;
+	QByteArray myList;
+	QString inLine;
+	QString addLine;
 
+
+	QFile file("todo.txt");
+	QTextStream out(&file);
+	if (file.exists())
+	{
+		if (!file.open(QIODevice::ReadWrite | QIODevice::Text))
+			qDebug() << "File exists";
+		else
+ 			qDebug() << "file not open";
+	}
 
 	if (strcmp(argv[1], "-f") == 0)
 	{
@@ -26,25 +38,39 @@ int main(int argc, char* argv[]){
 	else if (strcmp(argv[1], "add") == 0)
 	{
 		qDebug() << "Perform add on default file";
-    	out << "The magic number is: " << 49 << "\n";
+    	addLine = QString::number(numLines+1);
+    	addLine += ":[ ] ";
+    	for(int i=2; i<argc; i++)
+    	{
+    		addLine += argv[i];
+    		addLine += " ";
+    	}
+    	addLine += "\n";
+    	out << addLine;
 	}
 	else if (strcmp(argv[1], "list") == 0)
 	{
 		qDebug() << "Perform list on default file";
+		QString line = file.readLine();
+	    while (!file.atEnd())
+	    {
+	    	qDebug() << line;
+	        line = file.readLine();
+	    }
+
 	}
 	else if (strcmp(argv[1], "do") == 0)
 	{
 		qDebug() << "Perform do on default file";
+		//Find number in QStringArray and modify
 	} 
-	else
-	{
-		printError();
-	}
+	else printError();	
 
 	return 0;
 }
 
-void printError(){
+void printError()
+{
 	qDebug() << "INCORRECT FORMAT!";
 	qDebug() << "CORRECT FORMAT: ./todo <-f> <filename> <command> <\'task\'>";
 	qDebug() << "CORRECT FORMAT: ./todo <command> <\'task\'>";
